@@ -34,8 +34,8 @@ def _validate_metric_weights(metric_weights: Dict[str, float]) -> None:
         if not isinstance(weight, (int, float)):
             raise ValueError(f"Metric weight must be numeric: {metric_name} -> {weight}")
 
-        if weight < -100 or weight > 100:
-            raise ValueError(f"Metric weight should be between -100 and 100: {metric_name} -> {weight}")
+        if weight < -1000 or weight > 1000:
+            raise ValueError(f"Metric weight should be between -1000 and 1000: {metric_name} -> {weight}")
 
 
 def _validate_base_costs(base_costs: Dict[str, float]) -> None:
