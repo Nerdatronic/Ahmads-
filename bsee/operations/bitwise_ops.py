@@ -20,7 +20,7 @@ class BitwiseOperations:
             'xor_range': self.xor_with_range,
             'not_bytes': self.not_bytes,
             'and_constant': self.and_with_constant,
-            'or_constant': self.or_with_constant,
+            'or_constant': self.or_constant,
             'rotate_left': self.rotate_bits_left,
             'rotate_right': self.rotate_bits_right,
             'shift_left': self.shift_bits_left,
