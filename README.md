@@ -31,6 +31,45 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+## Startup Scripts
+
+BSEE includes automated startup scripts that handle dependency installation and environment setup:
+
+### Windows Scripts
+
+- **`start.bat`** - Full setup with detailed checking and dependency installation
+- **`start_simple.bat`** - Quick start with minimal checks
+
+### Linux/macOS Scripts
+
+- **`start.sh`** - Full setup for Unix-like systems
+
+### What the Scripts Do
+
+1. **Check Python Installation** - Verifies Python 3.9+ is available
+2. **Create Virtual Environment** - Sets up isolated Python environment
+3. **Install Dependencies** - Automatically installs required packages:
+   - numpy, scipy, pyyaml (required)
+   - lz4, zstandard (optional, for compression metrics)
+4. **Activate Environment** - Ensures correct Python environment
+5. **Run BSEE** - Starts the analysis with user-provided arguments
+
+### Usage Examples
+
+```bash
+# Windows - interactive mode (shows help)
+start.bat
+
+# Windows - with arguments
+start.bat "test.bin --strategy greedy --max-operations 50"
+
+# Linux/macOS - interactive mode
+./start.sh
+
+# Linux/macOS - with arguments
+./start.sh "test.bin --policy policy_ideality.yaml --strategy annealing"
+```
+
 ## Quick Start
 
 ### Option 1: Using Startup Scripts (Recommended)
