@@ -30,9 +30,9 @@ class BitwiseOperations:
             'reverse_bits': self.reverse_bits_in_byte,
             'extract_high_nibble': self.extract_high_nibble,
             'extract_low_nibble': self.extract_low_nibble,
-            'clear_bit': self.clear_bit_position,
-            'set_bit': self.set_bit_position,
-            'toggle_bit': self.toggle_bit_position,
+            'clear_bit': self.clear_bit,
+            'set_bit': self.set_bit,
+            'toggle_bit': self.toggle_bit,
             'mask_bits': self.mask_bits,
             'interleave_bits': self.interleave_bits,
             'deinterleave_bits': self.deinterleave_bits
