@@ -6,6 +6,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 
 def setup_logging(log_level: str = "INFO", log_file: Optional[str] = None):
