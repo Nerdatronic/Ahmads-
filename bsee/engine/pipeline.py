@@ -191,7 +191,7 @@ class Pipeline:
                 'operation': operation_name,
                 'params': params,
                 'cost': cost,
-                'timestamp': self.logger.info.timestamp.isoformat()
+                'timestamp': datetime.now().isoformat()
             },
             operation_history=self.current_state.operation_history + [{
                 'operation': operation_name,
