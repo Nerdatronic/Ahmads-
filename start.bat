@@ -113,16 +113,144 @@ if "%~1"=="" (
         pause >nul
     ) else if errorlevel 2 (
         echo.
-        echo    CLI Mode - Enter your arguments or press Enter for interactive:
-        set /p args="Arguments (or leave empty): "
+        echo    CLI Interactive Mode
+        echo    ===================
         echo.
-        echo    Starting BSEE with arguments: %args%
-        python main.py %args%
 
-        if errorlevel 1 (
+        :: Ensure input folder exists
+        if not exist "inputs\" mkdir inputs
+
+        :: Get input file
+        :get_file
+        echo    Available files in inputs\ folder:
+        if exist "inputs\*.bin" (
+            dir /b inputs\*.bin 2>nul
+        ) else (
+            echo    No .bin files found in inputs\ folder
+        )
+        echo.
+        set /p INPUT_FILE="Enter input filename (from inputs\ folder, e.g., test.bin): "
+
+        if "%INPUT_FILE%"=="" (
+            echo    ERROR: Please enter a filename
+            goto get_file
+        )
+
+        if not exist "inputs\%INPUT_FILE%" (
+            echo    ERROR: File inputs\%INPUT_FILE% does not exist
+            echo    Please make sure the file is in the inputs\ folder
+            goto get_file
+        )
+
+        echo    Using file: inputs\%INPUT_FILE%
+        echo.
+
+        :: Get strategy
+        echo    Available strategies:
+        echo    1. greedy     - Always select best operation (fast)
+        echo    2. beam       - Keep top N candidates
+        echo    3. annealing - Simulated annealing search
+        echo    4. mcts       - Monte Carlo Tree Search
+        echo    5. genetic    - Evolutionary algorithm
+        echo    6. heuristic  - Rule-based selection
+        echo.
+        set /p STRATEGY_CHOICE="Choose strategy [1-6, default=1]: "
+
+        if "%STRATEGY_CHOICE%"=="" set STRATEGY_CHOICE=1
+        if "%STRATEGY_CHOICE%"=="1" set STRATEGY=greedy
+        if "%STRATEGY_CHOICE%"=="2" set STRATEGY=beam
+        if "%STRATEGY_CHOICE%"=="3" set STRATEGY=annealing
+        if "%STRATEGY_CHOICE%"=="4" set STRATEGY=mcts
+        if "%STRATEGY_CHOICE%"=="5" set STRATEGY=genetic
+        if "%STRATEGY_CHOICE%"=="6" set STRATEGY=heuristic
+        if "%STRATEGY_CHOICE%"=="1" set STRATEGY=greedy
+
+        for %%s in (greedy beam annealing mcts genetic heuristic) do (
+            if "!STRATEGY_CHOICE!"=="%%s" set STRATEGY=%%s
+        )
+
+        echo    Strategy: !STRATEGY!
+        echo.
+
+        :: Get max operations
+        set /p MAX_OPS="Enter max operations [default=1000]: "
+        if "%MAX_OPS%"=="" set MAX_OPS=1000
+        echo    Max operations: %MAX_OPS%
+        echo.
+
+        :: Get max cost
+        set /p MAX_COST="Enter max cost [default=10000]: "
+        if "%MAX_COST%"=="" set MAX_COST=10000
+        echo    Max cost: %MAX_COST%
+        echo.
+
+        :: Get metrics choice
+        echo    Metric presets:
+        echo    1. Default - file_ideality_score, entropy_global, lz77_ratio
+        echo    2. Entropy focus - entropy_global, shannon_entropy_global
+        echo    3. Compression focus - lz77_ratio, compression_ratio
+        echo    4. Custom - enter your own metrics
+        echo.
+        set /p METRICS_CHOICE="Choose metrics preset [1-4, default=1]: "
+
+        if "%METRICS_CHOICE%"=="" set METRICS_CHOICE=1
+        if "%METRICS_CHOICE%"=="1" set METRICS=file_ideality_score,entropy_global,lz77_ratio
+        if "%METRICS_CHOICE%"=="2" set METRICS=entropy_global,shannon_entropy_global
+        if "%METRICS_CHOICE%"=="3" set METRICS=lz77_ratio,compression_ratio
+        if "%METRICS_CHOICE%"=="4" (
+            set /p METRICS="Enter custom metrics (comma-separated): "
+            if "!METRICS!"=="" set METRICS=file_ideality_score,entropy_global,lz77_ratio
+        )
+
+        echo    Metrics: !METRICS!
+        echo.
+
+        :: Get output directory
+        set /p OUTPUT_DIR="Enter output directory [default=results]: "
+        if "%OUTPUT_DIR%"=="" set OUTPUT_DIR=results
+        echo    Output directory: %OUTPUT_DIR%
+        echo.
+
+        :: Show configuration summary
+        echo    Configuration Summary:
+        echo    ====================
+        echo    Input File:     inputs\%INPUT_FILE%
+        echo    Strategy:       !STRATEGY!
+        echo    Max Operations: %MAX_OPS%
+        echo    Max Cost:       %MAX_COST%
+        echo    Metrics:        !METRICS!
+        echo    Output Dir:     %OUTPUT_DIR%
+        echo.
+
+        :: Confirm execution
+        set /p CONFIRM="Start analysis with these settings? [Y/n]: "
+        if /i not "%CONFIRM%"=="n" if /i not "%CONFIRM%"=="no" (
             echo.
-            echo    BSEE encountered an error. Check the error message above.
-            echo    Make sure the input file exists and arguments are correct.
+            echo    Starting BSEE analysis...
+            echo    ========================
+            echo.
+
+            :: Create results directory if it doesn't exist
+            if not exist "%OUTPUT_DIR%" mkdir "%OUTPUT_DIR%"
+
+            :: Run BSEE with the configured parameters
+            python main.py "inputs\%INPUT_FILE%" ^
+                --strategy !STRATEGY! ^
+                --max-operations %MAX_OPS% ^
+                --max-cost %MAX_COST% ^
+                --metrics "!METRICS!" ^
+                --output-dir "%OUTPUT_DIR%" ^
+                --target-metrics "file_ideality_score=max,entropy_global=min"
+
+            if errorlevel 1 (
+                echo.
+                echo    BSEE encountered an error. Check the error message above.
+                echo    Make sure the input file exists and arguments are correct.
+            ) else (
+                echo.
+                echo    Analysis completed successfully!
+                echo    Results are saved in the '%OUTPUT_DIR%' directory.
+            )
         )
 
         echo.
