@@ -130,9 +130,40 @@ if "%~1"=="" (
             echo.
             set /p CREATE_TEST="Create a test file for demonstration? [Y/n]: "
             if /i not "%CREATE_TEST%"=="n" if /i not "%CREATE_TEST%"=="no" (
-                echo    Creating test file...
-                echo This is a test binary file for BSEE demonstration > "inputs\test.bin"
-                echo Created: inputs\test.bin
+                echo    Creating test binary file...
+                python -c "
+import os
+import random
+import struct
+
+# Create interesting test data
+test_data = bytearray()
+
+# Add repeated patterns
+test_data.extend(b'\xAA\x55\xAA\x55' * 64)  # Alternating pattern
+test_data.extend(b'\x00\xFF\x00\xFF' * 64)  # Complementary pattern
+test_data.extend(b'\x12\x34\x56\x78' * 32)  # Sequential pattern
+
+# Add random data
+test_data.extend(bytes([random.randint(0, 255) for _ in range(256)]))
+
+# Add structured data
+for i in range(64):
+    test_data.extend(struct.pack('<I', i))
+
+# Add ASCII text
+test_data.extend(b'Hello, BSEE! This is a test binary file for analysis.' * 8)
+
+# Add high-entropy data
+test_data.extend(os.urandom(512))
+
+# Write to file
+with open('inputs\test.bin', 'wb') as f:
+    f.write(test_data)
+
+print(f'Created test.bin ({len(test_data)} bytes)')
+"
+                echo    Created: inputs\test.bin
                 echo.
             )
         )
