@@ -33,6 +33,50 @@ pip install -e .
 
 ## Quick Start
 
+### Option 1: Using Startup Scripts (Recommended)
+
+**Windows:**
+```bash
+# Automatic dependency installation and setup
+start.bat
+
+# Or with arguments
+start.bat "test.bin --strategy greedy --max-operations 50"
+
+# Quick start (minimal checks)
+start_simple.bat
+```
+
+**Linux/macOS:**
+```bash
+# Make script executable and run
+chmod +x start.sh
+./start.sh
+
+# Or with arguments
+./start.sh "test.bin --strategy greedy --max-operations 50"
+```
+
+### Option 2: Manual Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/bsee/bsee.git
+cd bsee
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install BSEE in development mode
+pip install -e .
+```
+
+### Option 3: Run Directly
+
 ```bash
 # Basic usage with File Ideality focus
 python main.py input_file.bin \
