@@ -17,6 +17,7 @@ class EntropyMetrics:
         """Create all entropy metrics."""
         return {
             'shannon_entropy_global': self.shannon_entropy_global,
+            'entropy_global': self.shannon_entropy_global,  # Alias for backward compatibility
             'shannon_entropy_windowed_8': self.shannon_entropy_windowed_8,
             'shannon_entropy_windowed_16': self.shannon_entropy_windowed_16,
             'shannon_entropy_windowed_32': self.shannon_entropy_windowed_32,
