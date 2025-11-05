@@ -93,37 +93,66 @@ for %%p in (%OPTIONAL_PACKAGES%) do (
 :: Display usage information
 echo [5/5] Ready to start BSEE
 echo.
-echo  Usage Examples:
-echo    python main.py input_file.bin --strategy greedy --max-operations 100
-echo    python main.py data.bin --policy policy_ideality.yaml --strategy annealing
-echo    python main.py test.bin --help
+echo  Launch Options:
+echo    1. GUI Mode (Recommended)       - Launch graphical interface
+echo    2. CLI Mode                    - Command line interface
+echo    3. Help                        - Show command line options
 echo.
 
-:: Check if user provided arguments
+:: Ask user what mode to launch
 if "%~1"=="" (
-    echo    No arguments provided. BSEE will start in interactive mode.
-    echo    You can also run: start.bat "your arguments here"
-    echo.
-    echo    Example: start.bat "test.bin --strategy greedy --max-operations 50"
-    echo.
+    echo    Choose launch mode [1-3]:
+    choice /c 123 /n /m "Choose launch mode (1=GUI, 2=CLI, 3=Help): "
 
-    :: Run BSEE with help to show available options
-    python main.py --help
-
-    echo.
-    echo    Press any key to exit...
-    pause >nul
-) else (
-    echo    Starting BSEE with arguments: %*
-    echo.
-
-    :: Run BSEE with user-provided arguments
-    python main.py %*
-
-    if errorlevel 1 (
+    if errorlevel 3 (
         echo.
-        echo    BSEE encountered an error. Check the error message above.
-        echo    Make sure the input file exists and arguments are correct.
+        echo    Showing CLI help...
+        python main.py --help
+        echo.
+        echo    Press any key to exit...
+        pause >nul
+    ) else if errorlevel 2 (
+        echo.
+        echo    CLI Mode - Enter your arguments or press Enter for interactive:
+        set /p args="Arguments (or leave empty): "
+        echo.
+        echo    Starting BSEE with arguments: %args%
+        python main.py %args%
+
+        if errorlevel 1 (
+            echo.
+            echo    BSEE encountered an error. Check the error message above.
+            echo    Make sure the input file exists and arguments are correct.
+        )
+
+        echo.
+        echo    Press any key to exit...
+        pause >nul
+    ) else if errorlevel 1 (
+        echo.
+        echo    Starting BSEE GUI...
+        python gui_main.py
+
+        if errorlevel 1 (
+            echo.
+            echo    BSEE GUI encountered an error. Check the error message above.
+            echo    Make sure all dependencies are installed correctly.
+        )
+    )
+) else (
+    :: Direct argument provided - check if GUI requested
+    if "%~1"=="gui" (
+        echo    Starting BSEE GUI with arguments: %*
+        python gui_main.py %2 %3 %4 %5 %6 %7 %8 %9
+    ) else (
+        echo    Starting BSEE CLI with arguments: %*
+        python main.py %*
+
+        if errorlevel 1 (
+            echo.
+            echo    BSEE encountered an error. Check the error message above.
+            echo    Make sure the input file exists and arguments are correct.
+        )
     )
 )
 
