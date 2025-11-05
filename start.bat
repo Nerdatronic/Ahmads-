@@ -53,7 +53,7 @@ echo [4/5] Checking dependencies...
 echo    Checking required packages...
 
 :: List of required packages
-set PACKAGES=numpy scipy pyyaml
+set PACKAGES=numpy scipy pyyaml matplotlib pillow psutil
 
 :: Check each package and install if missing
 for %%p in (%PACKAGES%) do (
