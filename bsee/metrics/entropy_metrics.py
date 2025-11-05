@@ -45,6 +45,12 @@ class EntropyMetrics:
                 'range': [0, 8],
                 'higher_better': False
             },
+            'entropy_global': {
+                'category': 'entropy',
+                'description': 'Shannon entropy of entire binary (alias)',
+                'range': [0, 8],
+                'higher_better': False
+            },
             'shannon_entropy_windowed_8': {
                 'category': 'entropy',
                 'description': 'Average Shannon entropy in 8-byte windows',
