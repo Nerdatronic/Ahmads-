@@ -169,16 +169,29 @@ print(f'Created test.bin ({len(test_data)} bytes)')
         )
         echo.
         set /p INPUT_FILE="Enter input filename (from inputs\ folder, e.g., test.bin): "
+        set /p FULL_PATH="Or enter full path to file (optional): "
 
-        if "%INPUT_FILE%"=="" (
+        if "%INPUT_FILE%"=="" if "%FULL_PATH%"=="" (
             echo    ERROR: Please enter a filename
             goto get_file
         )
 
-        if not exist "inputs\%INPUT_FILE%" (
-            echo    ERROR: File inputs\%INPUT_FILE% does not exist
-            echo    Please make sure the file is in the inputs\ folder
-            goto get_file
+        if "%FULL_PATH%"=="" (
+            if not exist "inputs\%INPUT_FILE%" (
+                echo    ERROR: File inputs\%INPUT_FILE% does not exist
+                echo    Please make sure the file is in the inputs\ folder
+                goto get_file
+            )
+        ) else (
+            if exist "%FULL_PATH%" (
+                echo    Copying file from %FULL_PATH% to inputs folder...
+                copy "%FULL_PATH%" "inputs\" >nul
+                for %%F in ("%FULL_PATH%") do set INPUT_FILE=%%~nxF
+                echo    Copied to: inputs\%INPUT_FILE%
+            ) else (
+                echo    ERROR: File %FULL_PATH% does not exist
+                goto get_file
+            )
         )
 
         echo    Using file: inputs\%INPUT_FILE%
