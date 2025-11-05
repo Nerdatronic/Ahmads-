@@ -127,6 +127,14 @@ if "%~1"=="" (
             dir /b inputs\*.bin 2>nul
         ) else (
             echo    No .bin files found in inputs\ folder
+            echo.
+            set /p CREATE_TEST="Create a test file for demonstration? [Y/n]: "
+            if /i not "%CREATE_TEST%"=="n" if /i not "%CREATE_TEST%"=="no" (
+                echo    Creating test file...
+                echo This is a test binary file for BSEE demonstration > "inputs\test.bin"
+                echo Created: inputs\test.bin
+                echo.
+            )
         )
         echo.
         set /p INPUT_FILE="Enter input filename (from inputs\ folder, e.g., test.bin): "
